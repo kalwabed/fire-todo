@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Box, Button, List, ListItem, Link as ChakraLink } from '@chakra-ui/react'
+import { useState, useEffect } from 'react'
+import { Box, Button, List, Text, ListItem, Link as ChakraLink } from '@chakra-ui/react'
 import { Link } from '@reach/router'
 
 import Logo from '../../logo.svg'
@@ -7,14 +7,20 @@ import { useActions, useStore } from 'src/store/hooks'
 
 const TopNavigation = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const isAuth = useStore(state => state.user.isAuth)
+
+  const checkUserAuthenticate = useActions(actions => actions.user.checkUserAuthenticate)
   const signInWithGoogle = useActions(actions => actions.user.signInWithGoogle)
   const signOutWithGoogle = useActions(actions => actions.user.signOutWithGoogle)
 
-  console.log(isAuth)
+  const user = useStore(state => state.user.user)
+  const isAuthenticated = useStore(state => state.user.isAuthenticated)
+
+  useEffect(() => {
+    checkUserAuthenticate()
+  }, [])
 
   const handleButton = () => {
-    if (isAuth) {
+    if (isAuthenticated) {
       setIsLoading(true)
       signOutWithGoogle()
       setIsLoading(false)
@@ -34,35 +40,15 @@ const TopNavigation = () => {
           </ChakraLink>
         </ListItem>
 
-        <ListItem display="flex" alignItems="center" h="full">
-          <ChakraLink
-            as={Link}
-            to="/"
-            py=".5rem"
-            px="1rem"
-            h="full"
-            _hover={{ textDecoration: 'none', bgColor: 'gray.100' }}
-          >
-            Home
-          </ChakraLink>
-        </ListItem>
-
-        <ListItem display="flex" alignItems="center" h="full">
-          <ChakraLink
-            as={Link}
-            to="/todo"
-            py=".5rem"
-            px="1rem"
-            h="full"
-            _hover={{ textDecoration: 'none', bgColor: 'gray.100' }}
-          >
-            My todo
-          </ChakraLink>
-        </ListItem>
+        {isAuthenticated && (
+          <ListItem display="flex" alignItems="center" h="full">
+            <Text color="gray.500">Welcome, {user?.displayName}</Text>
+          </ListItem>
+        )}
 
         <ListItem display="flex" alignItems="center" h="full" ml={3}>
           <Button isLoading={isLoading} colorScheme="teal" onClick={handleButton}>
-            {isAuth ? 'Logout' : 'Login'}
+            {isAuthenticated ? 'Logout' : 'Login'}
           </Button>
         </ListItem>
       </List>
