@@ -29,7 +29,7 @@ const TopNavigation = () => {
         <ListItem display="flex" alignItems="center" h="full">
           <ChakraLink
             as={Link}
-            to="/about"
+            to="/todo"
             py=".5rem"
             px="1rem"
             h="full"
