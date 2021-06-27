@@ -18,7 +18,7 @@ const TopNavigation = () => {
   const handleButton = () => {
     if (isAuthenticated) {
       setIsLoading(true)
-      resetTodos()
+      resetTodos([])
       signOutWithGoogle()
       setIsLoading(false)
       return

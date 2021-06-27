@@ -9,7 +9,7 @@ const InputData = () => {
 
   const user = useStore(state => state.user.user)
 
-  const setTodos = useActions(actions => actions.todo.setTodos)
+  const saveTodo = useActions(actions => actions.todo.saveTodo)
   const checkUserAuthenticate = useActions(actions => actions.user.checkUserAuthenticate)
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -23,7 +23,7 @@ const InputData = () => {
 
     if (e.key === 'Enter') {
       checkUserAuthenticate()
-      setTodos(newTodo)
+      saveTodo(newTodo)
       _setTodo('')
     }
   }

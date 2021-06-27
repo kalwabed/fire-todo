@@ -7,7 +7,7 @@ const TodoList = () => {
   return (
     <>
       {todos?.map(todo => (
-        <CardItem key={todo.createdAt} {...todo} />
+        <CardItem key={todo.id} {...todo} />
       ))}
     </>
   )

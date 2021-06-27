@@ -12,10 +12,11 @@ export interface Todo {
 
 export interface TodoModel {
   todos: Todo[]
-  saveTodo: Action<TodoModel, Todo>
-  setTodos: Thunk<TodoModel, Todo>
+  setAndSortTodos: Action<TodoModel, Todo>
+  saveTodo: Thunk<TodoModel, Todo>
+  updateTodo: Thunk<TodoModel, Todo>
   getTodosByUserId: Thunk<TodoModel, string>
-  resetTodos: Action<TodoModel>
+  resetTodos: Action<TodoModel, [] | Todo[]>
 }
 
 function sortTodos(todos: Todo[]) {
@@ -24,25 +25,36 @@ function sortTodos(todos: Todo[]) {
 
 const todoModel: TodoModel = {
   todos: [],
-  saveTodo: action((state, payload) => {
+  setAndSortTodos: action((state, payload) => {
     state.todos = sortTodos([...state.todos, payload])
   }),
-  resetTodos: action((state, _) => {
-    state.todos = []
+  resetTodos: action((state, payload) => {
+    state.todos = payload
   }),
   getTodosByUserId: thunk(async (actions, payload) => {
     const todos = await firebase.firestore().collection('todos').where('userId', '==', payload).get()
+
     todos.forEach(doc => {
-      actions.saveTodo({ id: doc.id, ...doc.data() } as Todo)
+      actions.setAndSortTodos({ id: doc.id, ...doc.data() } as Todo)
     })
   }),
-  setTodos: thunk(async (actions, payload) => {
+  saveTodo: thunk(async (actions, payload) => {
+    const todo = await firebase
+      .firestore()
+      .collection('todos')
+      .add({ ...payload })
+
+    const id = todo.id
+    actions.setAndSortTodos({ id, ...payload })
+  }),
+  updateTodo: thunk(async (actions, payload) => {
     await firebase
       .firestore()
       .collection('todos')
       .doc(payload.id)
       .set({ ...payload }, { merge: true })
-    actions.saveTodo(payload)
+
+    actions.setAndSortTodos({ ...payload })
   })
 }
 
