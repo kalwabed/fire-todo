@@ -36,8 +36,7 @@ const userModel: UserModel = {
     const userSignIn = await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
     const user = formatUser(userSignIn)
 
-    actions.setIsAuthenticated(true)
-    actions.setUser(user)
+    actions.checkUserAuthenticate()
     actions.addUserToDB(user)
   }),
   addUserToDB: thunk(async (_, payload) => {

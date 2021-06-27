@@ -5,11 +5,11 @@ import { Todo } from 'src/store/todo'
 import { useActions, useStore } from 'src/store/hooks'
 
 const InputData = () => {
-  const [todo, setTodo] = useState('')
+  const [todo, _setTodo] = useState('')
 
   const user = useStore(state => state.user.user)
 
-  const addTodo = useActions(actions => actions.todo.addTodo)
+  const setTodos = useActions(actions => actions.todo.setTodos)
   const checkUserAuthenticate = useActions(actions => actions.user.checkUserAuthenticate)
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -23,17 +23,18 @@ const InputData = () => {
 
     if (e.key === 'Enter') {
       checkUserAuthenticate()
-      addTodo(newTodo)
-      setTodo('')
+      setTodos(newTodo)
+      _setTodo('')
     }
   }
 
   return (
     <Input
       placeholder="Add new todo"
+      variant="flushed"
       mb={4}
       value={todo}
-      onChange={e => setTodo(e.target.value)}
+      onChange={e => _setTodo(e.target.value)}
       onKeyDown={handleKeyDown}
     />
   )
