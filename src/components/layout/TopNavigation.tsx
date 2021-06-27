@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Box, Button, List, Text, ListItem, Link as ChakraLink } from '@chakra-ui/react'
 import { Link } from '@reach/router'
 
@@ -8,20 +8,17 @@ import { useActions, useStore } from 'src/store/hooks'
 const TopNavigation = () => {
   const [isLoading, setIsLoading] = useState(false)
 
-  const checkUserAuthenticate = useActions(actions => actions.user.checkUserAuthenticate)
   const signInWithGoogle = useActions(actions => actions.user.signInWithGoogle)
   const signOutWithGoogle = useActions(actions => actions.user.signOutWithGoogle)
 
   const user = useStore(state => state.user.user)
+  const resetTodos = useActions(state => state.todo.resetTodos)
   const isAuthenticated = useStore(state => state.user.isAuthenticated)
-
-  useEffect(() => {
-    checkUserAuthenticate()
-  }, [])
 
   const handleButton = () => {
     if (isAuthenticated) {
       setIsLoading(true)
+      resetTodos()
       signOutWithGoogle()
       setIsLoading(false)
       return

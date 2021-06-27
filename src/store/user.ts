@@ -1,7 +1,6 @@
 import { action, Action, thunk, Thunk } from 'easy-peasy'
 
 import firebase from 'src/lib/firebase'
-import { useActions, useStore } from './hooks'
 
 export interface User extends Partial<firebase.User> {
   email: string
@@ -37,8 +36,9 @@ const userModel: UserModel = {
     const userSignIn = await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
     const user = formatUser(userSignIn)
 
+    actions.setIsAuthenticated(true)
+    actions.setUser(user)
     actions.addUserToDB(user)
-    actions.checkUserAuthenticate()
   }),
   addUserToDB: thunk(async (_, payload) => {
     await firebase
@@ -59,13 +59,12 @@ const userModel: UserModel = {
     return firebase.auth().onAuthStateChanged(() => {
       const user = firebase.auth().currentUser as unknown as User
       actions.setUser(user)
-
+      console.log('checked')
       if (user) {
         actions.setIsAuthenticated(true)
       } else {
         actions.setIsAuthenticated(false)
       }
-      return user
     })
   })
 }

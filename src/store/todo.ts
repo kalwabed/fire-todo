@@ -14,12 +14,23 @@ export interface TodoModel {
   todos: Todo[]
   saveTodo: Action<TodoModel, Todo>
   addTodo: Thunk<TodoModel, Todo>
+  getTodosByUserId: Thunk<TodoModel, string>
+  resetTodos: Action<TodoModel>
 }
 
 const todoModel: TodoModel = {
-  todos: [{ createdAt: '13-04-02', text: 'Mandi', userId: '1' }],
+  todos: [],
   saveTodo: action((state, payload) => {
     state.todos.push(payload)
+  }),
+  resetTodos: action((state, _) => {
+    state.todos = []
+  }),
+  getTodosByUserId: thunk(async (actions, payload) => {
+    const todos = await firebase.firestore().collection('todos').where('userId', '==', payload).get()
+    todos.forEach(doc => {
+      actions.saveTodo(doc.data() as Todo)
+    })
   }),
   addTodo: thunk(async (actions, payload) => {
     await firebase
