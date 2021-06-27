@@ -5,6 +5,7 @@ import { RouteComponentProps } from '@reach/router'
 import Content from '../components/layout/Content'
 import Page from '../components/layout/Page'
 import { useActions, useStore } from 'src/store/hooks'
+import Identity from 'src/components/todo/Identity'
 import firebase from 'src/lib/firebase'
 import InputData from 'src/components/todo/InputData'
 import TodoList from 'src/components/todo/TodoList'
@@ -27,9 +28,9 @@ const HomePage: React.FC<RouteComponentProps> = () => {
   return (
     <Page>
       <Content>
-        <Flex flexDir="column" justify="center" maxW={['2xl', 'lg']} mx="auto">
+        <Flex flexDir="column" justify="center" maxW={['2xl', 'lg']} mx="auto" px={[2, 0]}>
           <Heading mb={4}>My Todo</Heading>
-          {!isAuthenticated && <p>Please login to proceed</p>}
+          <Identity />
           {isAuthenticated && (
             <>
               <InputData />
