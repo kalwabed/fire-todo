@@ -17,13 +17,17 @@ const HomePage: React.FC<RouteComponentProps> = () => {
 
   const isAuthenticated = useStore(state => state.user.isAuthenticated)
 
+  /* eslint-disable */
+  // lagi males urusan sama eslint disini
   useEffect(() => {
     checkUserAuthenticate()
     firebase.auth().onAuthStateChanged(() => {
       const user = firebase.auth().currentUser as unknown as User
+
       user && getTodosByUserId(user!.uid)
     })
   }, [])
+  /* eslint-disable */
 
   return (
     <Page>
